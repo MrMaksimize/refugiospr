@@ -78,12 +78,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           float: right;
           height: 200px;
       }
-      h1#map-cta-placeholder{
+      #map-cta-placeholder{
           float: left;
+          width: 100%;
+          font-size: 20px;
+          line-height: 25px;
       }
-
-
-
+      #map-cta-placeholder ul {
+          list-style: circle;
+      }
+      #map-cta-placeholder ul li {
+      }
 
     </style>
 
@@ -94,7 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 pitch="0"
                 flex-to-size
                 disable-attribution-control
-                style="mapbox://styles/mrmaksimize/cj6wqfpch9c1f2so31zphr8gw"
+                style="mapbox://styles/mapbox/dark-v9"
                 mgl-token="pk.eyJ1IjoibXJtYWtzaW1pemUiLCJhIjoiRlRwLWwyVSJ9.--Y4RdEJ_5ZuJjSUkx34vQ"
                 lat="18.2208"
                 lng="-66.55901">
@@ -118,8 +123,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <px-map-gl-layer-symbol
               layout='{
                 "icon-optional" : false,
-                "icon-image": "town-hall-15",
-                "icon-size": 2
+                "icon-image": "embassy-15",
+                "icon-size": 1
               }'
               id="building-layer"
               source="fac-buildings">
@@ -137,7 +142,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <fsd-building-detail-view-card compact building-item="[[ buildingInfo ]]"></fsd-building-detail-view-card>
         </template>
       <template is="dom-if" if="{{ !buildingInfo.properties.codigo }}">
-          <h1 id="map-cta-placeholder"> Click on a building to see more info. </h1>
+          <div id="map-cta-placeholder">
+              <ul>
+                  <li>Ubique su refugio más cercano</li>
+                  <li>Conozca sobre refugios por toda la isla</li>
+                  <li>Oprima en un refugio para detalles</li>
+                  <li>Oprima doble en el mapa para 'zoom in'</li>
+              </ul>
+          </div>
       </template>
     </div><!-- card -->
 

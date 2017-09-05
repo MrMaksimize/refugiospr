@@ -1,6 +1,6 @@
 {
-  "name": "PreparePR",
-  "short_name": "PreparePR",
+  "name": "RefugiosPR",
+  "short_name": "RefugiosPR",
   "start_url": "/?homescreen=1",
   "display": "standalone",
   "theme_color": "#3f51b5",
