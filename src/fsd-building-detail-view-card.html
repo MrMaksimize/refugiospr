@@ -9,7 +9,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
@@ -24,36 +23,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           margin-bottom: 8px;
         }
       }
-      paper-card strong {
+      .title-container {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .card-title {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      strong {
         font-weight: bold;
       }
 
-      paper-card {
-        margin-bottom: 0px;
-        height: 100%;
-        --paper-card-header-image-text: {
-            font-weight: bold;
-            font-size: 30px;
-            background: white;
-        }
-
-        --paper-card-header-image: {
-            opacity: 0.5;
-            background: white;
-             /* How to put max-height here for when google maps responds with bad response*/
-        }
-      }
-
-      @media only print {
-        #more-info {
-            height: 5000px;
-        }
-        paper-card {
-            height: 5000px;
-        }
-        .card-actions {
-            height: 5000px;
-        }
+      #building-details {
+        padding: 10px;
       }
 
 
@@ -62,15 +45,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
 
-      <paper-card class="col12"
-             heading="[[ buildingItem.properties.facilidades ]]"
-             alt="[[ buildingItem.properties.building_name]]"
-             fade-image
-             class="white building-detail">
-
-       <div class="card-content">
-
           <div id="building-details" class="col12 clearfix">
+            <div class="title-container col12 clearfix">
+                <span class="card-title">[[ buildingItem.properties.facilidades ]]</span>
+                <span class="map-link">
+                    <a
+                    href="https://www.google.com/maps/dir/?api=1&destination=[[ buildingItem.properties.lat ]],
+                    [[ buildingItem.properties.lon ]]" target="_blank" title="Navigate">
+                        (mapa)
+                    </a>
+                </span>
+            </div>
             <div class="col6">
             <ul>
                 <li><strong> Facilidad: </strong> [[ buildingItem.properties.facilidades ]]</li>
@@ -81,13 +66,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <div class="col6">
             <ul>
-                <li><strong> Telefono: </strong> [[ buildingItem.properties.telefono ]]</li>
+                <li>
+                    <strong> Telefono: </strong>
+                    <a href="tel:+1-787-[[ buildingItem.properties.telefono ]]">
+                      (787) [[ buildingItem.properties.telefono ]]
+                    </a>
+                </li>
                 <li><strong> Municipio: </strong> [[ buildingItem.properties.municipio ]]</li>
             </ul>
             </div> <!-- right-col -->
           </div> <!-- col-wrap -->
-        </div> <!-- card-content -->
-    </paper-card>
   </template>
 
 

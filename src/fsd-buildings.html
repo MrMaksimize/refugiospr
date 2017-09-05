@@ -57,14 +57,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       #building-info-card {
         width:100%;
-        height: 170px;
-        position: absolute;
+        height: 30vh;
         bottom: 0px;
         background: white;
         opacity: 0.9;
       }
       #map-card {
-        height: 100%;
+        height: 70vh;
         width: 100%;
         margin: 0px;
         display: flex;
@@ -124,13 +123,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               layout='{
                 "icon-optional" : false,
                 "icon-image": "embassy-15",
-                "icon-size": 1
+                "icon-size": 2
               }'
               id="building-layer"
               source="fac-buildings">
             </px-map-gl-layer-symbol>
 
-            <px-map-gl-control-attribution position="top-right">
+            <px-map-gl-control-attribution position="bottom-right">
             </px-map-gl-control-attribution>
 
 
@@ -144,7 +143,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template is="dom-if" if="{{ !buildingInfo.properties.codigo }}">
           <div id="map-cta-placeholder">
               <ul>
-                  <li>Ubique su refugio más cercano</li>
+                  <li>
+                      <a href="#" on-click="_triggerGeolocate">
+                          Ubique su refugio más cercano
+                      </a>
+                  </li>
                   <li>Conozca sobre refugios por toda la isla</li>
                   <li>Oprima en un refugio para detalles</li>
                   <li>Oprima doble en el mapa para 'zoom in'</li>
@@ -180,6 +183,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       observers: [
       ],
+      _triggerGeolocate() {
+          console.log('tri');
+      },
       _handleLayerClick(e) {
         const emitterId = e.detail.emitter.id;
         if (emitterId == 'building-layer' && e.detail.event.features[0].properties) {
