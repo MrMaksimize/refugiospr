@@ -3,10 +3,11 @@
   "shell": "src/fsd-app.html",
   "fragments": [
     "src/fsd-building-detail-view-card.html",
+    "src/fsd-hospital-detail-view-card.html",
     "src/fsd-buildings.html",
+    "src/fsd-hospitals.html",
     "src/fsd-detail.html",
     "src/fsd-icons.html",
-    "src/fsd-list.html",
     "src/fsd-404.html"
   ],
   "sources": [
