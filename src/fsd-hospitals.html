@@ -1,0 +1,201 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+
+
+<!-- PolymerElement Components -->
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+<link rel="import" href="../bower_components/px-data-table/px-data-table.html" />
+<link rel="import" href="../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-source-geojson.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-layer-symbol.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-popup-debug.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-nav.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-geolocate.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-scale.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-fullscreen.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-attribution.html" />
+<link rel="import" href="fsd-hospital-detail-view-card.html">
+<link rel="import" href="shared-styles.html">
+
+<!-- Predix UI Components -->
+<!--custom -->
+<!--<link rel="import" href="../components/px-map/px-map.html" />
+<link rel="import" href="../components/px-map/px-map-tile-layer.html" />
+<link rel="import" href="../components/px-map/px-map-control-zoom.html" />
+<link rel="import" href="../components/px-map/px-map-layer-geojson.html" />-->
+
+<!-- custom -->
+
+<!-- Theme/CSS -->
+<link rel="import" href="../bower_components/px-theme/px-theme-styles.html">
+
+
+<dom-module id="fsd-hospitals">
+  <template>
+    <style include="shared-styles">
+      /*:host {
+        display: block;
+
+        padding: 10px;
+      }*/
+
+      :host {
+        width: 100%;
+        height: 100%;
+      }
+      :root {
+      }
+
+      #building-info-card {
+        width:100%;
+        height: 30vh;
+        bottom: 0px;
+        background: white;
+        opacity: 0.9;
+      }
+      #map-card {
+        height: 70vh;
+        width: 100%;
+        margin: 0px;
+        display: flex;
+        padding: 0px;
+        background: url('/images/datasd_wp_640.jpg') fixed repeat center center black;
+      }
+      px-map-gl {
+      }
+
+      img#dancing-sd-placeholder {
+          float: right;
+          height: 200px;
+      }
+      #map-cta-placeholder{
+          float: left;
+          width: 100%;
+          font-size: 20px;
+          line-height: 25px;
+      }
+      #map-cta-placeholder ul {
+          list-style: circle;
+      }
+      #map-cta-placeholder ul li {
+      }
+
+    </style>
+
+
+    <div id="map-card">
+        <px-map-gl zoom="8"
+                bearing="0"
+                pitch="0"
+                flex-to-size
+                disable-attribution-control
+                disable-map-hash
+                style="mapbox://styles/mapbox/dark-v9"
+                mgl-token="pk.eyJ1IjoibXJtYWtzaW1pemUiLCJhIjoiRlRwLWwyVSJ9.--Y4RdEJ_5ZuJjSUkx34vQ"
+                lat="18.2208"
+                lng="-66.55901">
+
+            <px-map-gl-control-nav
+                position="top-left">
+            </px-map-gl-control-nav>
+
+            <px-map-gl-control-geolocate
+                position="top-left">
+            </px-map-gl-control-geolocate>
+
+
+            <px-map-gl-source-geojson
+              id="fac-hospitals"
+              data="{{ processedHospitals }}">
+            </px-map-gl-source-geojson>
+
+
+            <!-- filter='["in", "asset_type", "Library"]' -->
+            <px-map-gl-layer-symbol
+              layout='{
+                "icon-optional" : false,
+                "icon-image": "hospital-15",
+                "icon-size": 2
+              }'
+              id="hospital-layer"
+              source="fac-hospitals">
+            </px-map-gl-layer-symbol>
+
+            <px-map-gl-control-attribution position="bottom-right">
+            </px-map-gl-control-attribution>
+
+
+        </px-map-gl>
+
+    </div>
+    <div id="building-info-card" style="">
+        <template is="dom-if" if="{{ buildingInfo.properties.nombre }}">
+            <fsd-hospital-detail-view-card compact building-item="[[ buildingInfo ]]"></fsd-hospital-detail-view-card>
+        </template>
+      <template is="dom-if" if="{{ !buildingInfo.properties.nombre}}">
+          <div id="map-cta-placeholder">
+              <ul>
+                  <li>
+                      <a href="#" on-click="_triggerGeolocate">
+                          Find nearest hospital
+                      </a>
+                  </li>
+                  <li>Conozca sobre refugios por toda la isla</li>
+                  <li>Oprima en un refugio para detalles</li>
+                  <li>Oprima doble en el mapa para 'zoom in'</li>
+              </ul>
+          </div>
+      </template>
+    </div><!-- card -->
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'fsd-hospitals',
+      listeners: {
+        'px-map-gl-layer-click': '_handleLayerClick'
+      },
+      properties: {
+        // Building Info to display on the infobox.
+        buildingInfo: {
+          type: Object,
+          notify: true,
+          readOnly: true,
+          value: function () {
+            return {};
+          }
+        },
+        // Prcessed bldg data coming from fsd-app.
+        processedHospitals: {
+          type: Object,
+          notify: true
+        }
+      },
+      observers: [
+      ],
+      _triggerGeolocate() {
+          console.log('tri');
+      },
+      _handleLayerClick(e) {
+        const emitterId = e.detail.emitter.id;
+        if (emitterId == 'hospital-layer' && e.detail.event.features[0].properties) {
+          var hospFeature = e.detail.event.features[0];
+          hospFeature.properties.lon = e.detail.event.lngLat.lng;
+          hospFeature.properties.lat = e.detail.event.lngLat.lat;
+          this._setBuildingInfo(hospFeature)
+        }
+      }
+    });
+  </script>
+</dom-module>

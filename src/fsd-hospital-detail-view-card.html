@@ -1,0 +1,101 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="fsd-hospital-detail-view-card">
+  <template>
+    <style include="shared-styles" is="custom-style">
+      :host {
+        h1 {
+          margin-top: 8px;
+          margin-bottom: 8px;
+        }
+      }
+      .title-container {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .card-title {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      strong {
+        font-weight: bold;
+      }
+
+      #building-details {
+        padding: 10px;
+      }
+
+
+
+
+
+    </style>
+
+          <div id="building-details" class="col12 clearfix">
+            <div class="title-container col12 clearfix">
+                <span class="card-title">[[ buildingItem.properties.nombre ]]</span>
+                <span class="map-link">
+                    <a
+                    href="https://www.google.com/maps/dir/?api=1&destination=[[ buildingItem.properties.lat ]],
+                    [[ buildingItem.properties.lon ]]" target="_blank" title="Navigate">
+                        (mapa)
+                    </a>
+                </span>
+            </div>
+            <div class="col6">
+            <ul>
+                <li><strong> Direccion Fisica: </strong> [[ buildingItem.properties.full_addr ]]</li>
+                <li><strong> Tipo De Facilidad: </strong> [[ buildingItem.properties.tipo_de_facilidad ]]</li>
+            </ul>
+            </div>
+
+            <div class="col6">
+            <ul>
+                <li>
+                    <strong> Telefono: </strong>
+                    <a href="tel:+1-787-[[ buildingItem.properties.tel ]]">
+                      (787) [[ buildingItem.properties.tel ]]
+                    </a>
+                </li>
+                <li><strong> Pueblo: </strong> [[ buildingItem.properties.pueblo ]]</li>
+            </ul>
+            </div> <!-- right-col -->
+          </div> <!-- col-wrap -->
+  </template>
+
+
+ <script>
+    Polymer({
+      is: 'fsd-hospital-detail-view-card',
+      listeners: {
+      },
+      properties: {
+        buildingItem: {
+          type: Object,
+          notify: true,
+          observer: '_buildingItemChanged'
+        }
+      },
+      attached: function() {
+      },
+      _buildingItemChanged: function(oldVal, newVal) {
+      },
+      observers: [
+      ]
+    });
+  </script>
+</dom-module>
