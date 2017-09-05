@@ -1,0 +1,99 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html" />
+<link rel="import" href="../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="fsd-building-detail-view-card.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="fsd-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="fsd-detail">
+  <template>
+    <style include="shared-styles">
+      :host {
+      }
+    </style>
+
+    <app-route
+        route="{{route}}"
+        pattern="/:buildingId"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+
+    <div id="result-container" class="col12 clearflix">
+        <fsd-building-detail-view-card
+            id$="building-[[ activeBuilding.properties.building_number ]]"
+            class="print-info"
+            building-item="[[ activeBuilding ]]"
+            expanded></fsd-building-detail-view-card>
+    </div>
+
+   </template>
+
+
+ <script>
+    Polymer({
+      is: 'fsd-detail',
+      listeners: {
+      },
+      properties: {
+        // Prcessed bldg data coming from fsd-app.
+        processedBuildings: {
+          type: Object,
+          notify: true,
+          observer: '_selectActiveBuilding'
+        },
+        routeData: {
+          type: Object,
+          notify: true,
+          observer: '_selectActiveBuilding'
+        },
+        activeBuilding: {
+          type: Object
+        },
+        print: {
+          type: Boolean,
+          value: false
+        }
+
+      },
+      observers: [
+      ],
+      attached: function() {
+        console.log(this.routeData);
+        this.set('activeBuildingId', this.routeData.buildingId);
+      },
+      _selectActiveBuilding: function(newVal, oldVal) {
+        if (this.routeData && this.routeData.buildingId && this.processedBuildings) {
+          const activeBuildingIndex = _.findIndex(
+                  this.processedBuildings.features, (buildingFeature) => {
+              return buildingFeature.properties.building_number == this.routeData.buildingId;
+            });
+
+        if (activeBuildingIndex !== -1) {
+              console.log('set modal building');
+              this.set('activeBuilding', this.processedBuildings.features[activeBuildingIndex]);
+              if (this.subroute && this.subroute.__queryParams.print === "true") {
+                  console.log('p');
+                  this.set('print', true);
+              }
+            }
+            else {
+              console.log('no set modal building');
+              //this.set('modalBuilding', null);
+            }
+        }
+      },
+    });
+  </script>
+</dom-module>

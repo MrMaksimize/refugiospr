@@ -1,0 +1,114 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="fsd-building-detail-view-card">
+  <template>
+    <style include="shared-styles" is="custom-style">
+      :host {
+        h1 {
+          margin-top: 8px;
+          margin-bottom: 8px;
+        }
+      }
+      paper-card strong {
+        font-weight: bold;
+      }
+
+      paper-card {
+        margin-bottom: 0px;
+        height: 100%;
+        --paper-card-header-image-text: {
+            font-weight: bold;
+            font-size: 30px;
+            background: white;
+        }
+
+        --paper-card-header-image: {
+            opacity: 0.5;
+            background: white;
+             /* How to put max-height here for when google maps responds with bad response*/
+        }
+      }
+
+      @media only print {
+        #more-info {
+            height: 5000px;
+        }
+        paper-card {
+            height: 5000px;
+        }
+        .card-actions {
+            height: 5000px;
+        }
+      }
+
+
+
+
+
+    </style>
+
+      <paper-card class="col12"
+             heading="[[ buildingItem.properties.facilidades ]]"
+             alt="[[ buildingItem.properties.building_name]]"
+             fade-image
+             class="white building-detail">
+
+       <div class="card-content">
+
+          <div id="building-details" class="col12 clearfix">
+            <div class="col6">
+            <ul>
+                <li><strong> Facilidad: </strong> [[ buildingItem.properties.facilidades ]]</li>
+                <li><strong> Direccion Fisica: </strong> [[ buildingItem.properties.direccio_fisica ]]</li>
+                <li><strong> Lugares Disponibles: </strong> [[ buildingItem.properties.disponibles ]]</li>
+            </ul>
+            </div>
+
+            <div class="col6">
+            <ul>
+                <li><strong> Telefono: </strong> [[ buildingItem.properties.telefono ]]</li>
+                <li><strong> Municipio: </strong> [[ buildingItem.properties.municipio ]]</li>
+            </ul>
+            </div> <!-- right-col -->
+          </div> <!-- col-wrap -->
+        </div> <!-- card-content -->
+    </paper-card>
+  </template>
+
+
+ <script>
+    Polymer({
+      is: 'fsd-building-detail-view-card',
+      listeners: {
+      },
+      properties: {
+        buildingItem: {
+          type: Object,
+          notify: true,
+          observer: '_buildingItemChanged'
+        }
+      },
+      attached: function() {
+      },
+      _buildingItemChanged: function(oldVal, newVal) {
+      },
+      observers: [
+      ]
+    });
+  </script>
+</dom-module>
