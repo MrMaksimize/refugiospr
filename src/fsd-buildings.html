@@ -208,11 +208,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         geo: {
           type: Object
+        },
+        feature: {
+          type: Number
+        },
+        active: {
+          type: Boolean,
+          value: false
         }
       },
       observers: [
+        '_syncFeature(feature,processedBuildings,active)'
       ],
       _mapMoved(e) {
+        if (!this.active) return;
         var map = Polymer.dom(e).rootTarget;
         if (map !== null) {
           var geo = {
@@ -226,11 +235,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _triggerGeolocate() {
           console.log('tri');
       },
+      _syncFeature(id) {
+        if (!this.active) return;
+        if (id && (!this.buildingInfo || !this.buildingInfo.properties || this.buildingInfo.properties.cartodb_id !== id)) {
+          var layer = Polymer.dom(this.root).querySelector('#fac-buildings');
+          if (layer !== null && layer.data && layer.data.features) {
+            var feature = (layer.data.features.filter(function(l) {
+              return l.properties && l.properties.cartodb_id === id;
+            }) || [null])[0];
+            if (feature) {
+              this._setBuildingInfo(feature);
+              this.set('geo.lat', roundToThreeDecimal(feature.geometry.coordinates[1]));
+              this.set('geo.lng', roundToThreeDecimal(feature.geometry.coordinates[0]));
+            }
+          }
+        }
+      },
       _handleLayerClick(e) {
         const emitterId = e.detail.emitter.id;
         if (emitterId == 'building-layer' && e.detail.event.features[0].properties) {
           console.log(e.detail.event.features[0]);
           this._setBuildingInfo(e.detail.event.features[0])
+          this.fire('map-feature-changed', e.detail.event.features[0].properties.cartodb_id);
         }
       }
     });
