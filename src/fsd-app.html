@@ -49,14 +49,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app-header {
         color: #fff;
         background-color: var(--app-primary-color);
+        height: 38px;
       }
       app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
+        --paper-icon-button-ink-color: blue;
       }
 
       app-toolbar {
         overflow: hidden;
-        height: 160px;
+        height: 38px;
       }
 
 
@@ -130,12 +131,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- Main content -->
       <app-header-layout has-scrolling-region>
 
-        <!--<app-header condenses reveals effects="waterfall">
+        <app-header condenses reveals effects="waterfall">
           <app-toolbar>
             <paper-icon-button icon="fsd-icons:menu" drawer-toggle></paper-icon-button>
-            <div main-title>FacilSD</div>
+            <div main-title>RefugiosPR</div>
           </app-toolbar>
-        </app-header>-->
+        </app-header>
 
         <iron-pages
             style="height:100%"
@@ -145,7 +146,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             role="main">
           <fsd-buildings name="fsd-buildings"
                          processed-buildings="[[ processedBuildings ]]"
-                         geo="[[ geo ]]">
+                         geo="[[ geo ]]"
                          processed-flood-areas="[[ processedFloodAreas ]]">
           </fsd-buildings>
           <fsd-hospitals name="fsd-hospitals"
