@@ -8,6 +8,7 @@
     "src/fsd-hospitals.html",
     "src/fsd-detail.html",
     "src/fsd-icons.html",
+    "src/fsd-about.html",
     "src/fsd-404.html"
   ],
   "sources": [
