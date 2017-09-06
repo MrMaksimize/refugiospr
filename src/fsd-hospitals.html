@@ -93,7 +93,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
     <div id="map-card">
-        <px-map-gl zoom="8"
+        <px-map-gl
                 bearing="0"
                 pitch="0"
                 flex-to-size
@@ -101,8 +101,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 disable-map-hash
                 style="mapbox://styles/mapbox/dark-v9"
                 mgl-token="pk.eyJ1IjoibXJtYWtzaW1pemUiLCJhIjoiRlRwLWwyVSJ9.--Y4RdEJ_5ZuJjSUkx34vQ"
-                lat="18.2208"
-                lng="-66.55901">
+                zoom="[[geo.zoom]]"
+                lat="[[geo.lat]]"
+                lng="[[geo.lng]]"
+                on-px-map-gl-moved="_mapMoved">
 
             <px-map-gl-control-nav
                 position="top-left">
@@ -161,6 +163,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
+  (function(){
     Polymer({
       is: 'fsd-hospitals',
       listeners: {
@@ -180,10 +183,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         processedHospitals: {
           type: Object,
           notify: true
+        },
+        geo: {
+          type: Object
         }
       },
       observers: [
       ],
+      _mapMoved(e) {
+        var map = Polymer.dom(e).rootTarget;
+        if (map !== null) {
+          var geo = {
+            lat: roundToThreeDecimal(map.lat),
+            lng: roundToThreeDecimal(map.lng),
+            zoom: Math.round(map.zoom)
+          };
+          this.fire('map-geo-changed', geo);
+        };
+      },
       _triggerGeolocate() {
           console.log('tri');
       },
@@ -197,5 +214,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
     });
+
+    function roundToThreeDecimal(num) {
+      return Math.round(num * 1000) / 1000;
+    };
+  })();
   </script>
 </dom-module>

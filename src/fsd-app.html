@@ -96,12 +96,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <app-location route="{{route}}" use-hash-as-path></app-location>
-    <app-route
+    <app-location
+        route="{{route}}"
+        path="{{path}}"
+        use-hash-as-path>
+    </app-location>
+    <!-- <app-route
         route="{{route}}"
         pattern="/:page"
         data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+        tail="{{subroute}}">
+    </app-route> -->
 
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
@@ -113,9 +118,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         <iron-selector id="fsd-main-nav" selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="fsd-about" class="main-nav-link" href="/#/fsd-about">About</a>
-          <a name="fsd-buildings" class="main-nav-link" href="/#/fsd-buildings">Refugios</a>
-          <a name="fsd-hospitals" class="main-nav-link" href="/#/fsd-hospitals">Hospitales</a>
+          <a name="fsd-about" class="main-nav-link" href="#" on-tap="_selectPage" page="fsd-about">About</a>
+          <a name="fsd-buildings" class="main-nav-link" href="#" on-tap="_selectPage" page="fsd-buildings">Refugios</a>
+          <a name="fsd-hospitals" class="main-nav-link" href="#" on-tap="_selectPage" page="fsd-hospitals">Hospitales</a>
         </iron-selector>
 
 
@@ -140,10 +145,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             role="main">
           <fsd-buildings name="fsd-buildings"
                          processed-buildings="[[ processedBuildings ]]"
+                         geo="[[ geo ]]">
                          processed-flood-areas="[[ processedFloodAreas ]]">
           </fsd-buildings>
           <fsd-hospitals name="fsd-hospitals"
-                         processed-hospitals="[[ processedHospitals ]]">
+                         processed-hospitals="[[ processedHospitals ]]"
+                         geo="[[ geo ]]">
           </fsd-hospitals>
 
           <!--<fsd-detail name="fsd-detail"
@@ -221,21 +228,114 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Object,
           notify: true,
           observer: '_processedBuildingsChanged'
+        },
+        path: {
+          type: String
+        },
+        geo: {
+          type: Object,
+          value: function() {
+            return {
+              lat: "18.220",
+              lng: "-66.559",
+              zoom: "10"
+            }
+          }
+        },
+        feature: {
+          type: String,
+          value: null
         }
+      },
+
+      listeners: {
+        'map-geo-changed' : '_mapGeoChanged'
       },
 
       observers: [
-        '_routePageChanged(routeData.page)',
+        '_pathChanged(path)',
+        '_syncPath(path, geo, feature)'
       ],
+
       _processedBuildingsChanged: function(newB, oldB) {
           console.log(newB)
       },
-      _routePageChanged: function(page, oldPage) {
-        this.page = page || 'fsd-buildings';
 
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
+      _pathChanged: function(path) {
+        // If no path, redirect to show `buildings` page as default
+        if (path === '') {
+          this.path = '/fsd-buildings';
+          // this.path = '/buildings+8/18.221/-66.559@foo-bar-baz-zoo';
+          return;
         }
+        // Decode path. The path will be in this format
+        // `/PAGE@FEATURE+ZOOM/LAT/LNG`
+        var REGEX_PAGE = /^\/([a-zA-Z0-9-_\/]+)/g;
+        var REGEX_GEO = /\+([0-9]+\/[0-9\.\-]+\/[0-9\.\-]+)/g;
+        var REGEX_FEATURE = /\@([a-zA-Z0-9-_]+)/g;
+
+        // Find the page
+        var pageMatch = REGEX_PAGE.exec(path);
+        if (pageMatch !== null) {
+          this.page = pageMatch[1];
+        }
+
+        // Find the geo
+        var geoMatch = REGEX_GEO.exec(path);
+        if (geoMatch !== null) {
+          var geo = geoMatch[1].split('/');
+          if (this.geo.zoom != geo[0] || this.geo.lat != geo[1] || this.geo.lng != geo[2]) {
+            this.geo = {
+              zoom: geo[0],
+              lat: geo[1],
+              lng: geo[2]
+            };
+          }
+        }
+
+        // Find the feature
+        var featureMatch = REGEX_FEATURE.exec(path);
+        if (featureMatch !== null) {
+          this.feature = featureMatch[1];
+        }
+      },
+
+      _mapGeoChanged: function(e) {
+        if (this.geo.lat !== e.detail.lat || this.geo.lng !== e.detail.lng || this.geo.zoom !== e.detail.zoom) {
+          console.log('@@ GEO CHANGED @@');
+          this.geo = e.detail;
+        }
+      },
+
+      _selectPage: function(e) {
+        e.preventDefault();
+        var link = Polymer.dom(e).rootTarget;
+        var page = link.getAttribute('page');
+        this.path = this._encodePath(page, this.geo, this.feature);
+      },
+
+      _syncPath: function(page, geo, feature) {
+        this.debounce('sync-path', function() {
+          var path = this._encodePath(this.page, this.geo, this.feature);
+          if (this.path !== path) {
+            console.log('@@ PATH CHANGED @@');
+            this.path = path;
+          }
+        }, 1000);
+      },
+
+      _encodePath: function(page, geo, feature) {
+        var path = '/';
+        if (page) {
+          path += page;
+        }
+        if (geo) {
+          path += '+' + geo.zoom + '/' + geo.lat + '/' + geo.lng;
+        }
+        if (feature) {
+          path += '@' + feature;
+        }
+        return path;
       },
 
       _pageChanged: function(page) {
