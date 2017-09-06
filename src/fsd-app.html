@@ -10,6 +10,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 <script src="/bower_components/lodash/dist/lodash.min.js"></script>
+<script src="https://unpkg.com/geobuf@3.0.0/dist/geobuf.js"></script>
+<script src="https://unpkg.com/pbf@3.0.5/dist/pbf.js"></script>
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
@@ -191,9 +193,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <iron-ajax
         id="ajax"
-        url="https://cityofsandiego-admin.carto.com/api/v2/sql?format=GeoJSON&q=select%20*%20from%20flood_areas_fema"
-        last-response="{{ processedFloodAreas }}"
-        handle-as="json"
+        url="http://mrm-screen.s3.amazonaws.com/carto_floodzones.pbf"
+        last-response="{{ unProcessedFloodAreas }}"
+        handle-as="arraybuffer"
         debounce-duration="3000"
         auto verbose>
     </iron-ajax>
@@ -224,11 +226,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true,
           observer: '_processedBuildingsChanged'
         },
-
         processedFloodAreas: {
           type: Object,
+          notify: true
+        },
+        unProcessedFloodAreas: {
+          type: Object,
           notify: true,
-          observer: '_processedBuildingsChanged'
+          observer: '_unProcessedFloodAreasChanged'
         },
         path: {
           type: String
@@ -259,6 +264,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_syncPath(path, geo, feature)'
       ],
 
+      _unProcessedFloodAreasChanged: function(newB, oldB) {
+          console.log(newB);
+          var geojson = geobuf.decode(new Pbf(newB));
+          this.set('processedFloodAreas', geojson);
+      },
       _processedBuildingsChanged: function(newB, oldB) {
           console.log(newB)
       },
