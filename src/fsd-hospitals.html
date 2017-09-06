@@ -20,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-popup-debug.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-nav.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-geolocate.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-geocoder.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-scale.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-fullscreen.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-attribution.html" />
@@ -114,6 +115,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 position="top-left">
             </px-map-gl-control-geolocate>
 
+            <px-map-gl-control-geocoder
+                mgl-token="pk.eyJ1IjoibXJtYWtzaW1pemUiLCJhIjoiRlRwLWwyVSJ9.--Y4RdEJ_5ZuJjSUkx34vQ"
+                position="top-right">
+            </px-map-gl-control-geocoder>
+
+
 
             <px-map-gl-source-geojson
               id="fac-hospitals"
@@ -146,11 +153,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template is="dom-if" if="{{ !buildingInfo.properties.nombre}}">
           <div id="map-cta-placeholder">
               <ul>
-                  <li>
-                      <a href="#" on-click="_triggerGeolocate">
-                          Find nearest hospital
-                      </a>
-                  </li>
                   <li>Conozca sobre refugios por toda la isla</li>
                   <li>Oprima en un refugio para detalles</li>
                   <li>Oprima doble en el mapa para 'zoom in'</li>
@@ -209,9 +211,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           };
           this.fire('map-geo-changed', geo);
         };
-      },
-      _triggerGeolocate() {
-          console.log('tri');
       },
       _syncFeature(id) {
         if (!this.active) return;

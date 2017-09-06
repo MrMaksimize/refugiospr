@@ -18,9 +18,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-source-geojson.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-layer-symbol.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-layer-fill.html" />
-<link rel="import" href="../bower_components/px-map-gl/px-map-gl-popup-debug.html" />
-<link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-nav.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-geolocate.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-geocoder.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-nav.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-scale.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-fullscreen.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-attribution.html" />
@@ -115,6 +115,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <px-map-gl-control-geolocate
                 position="top-left">
             </px-map-gl-control-geolocate>
+            <px-map-gl-control-geocoder
+                mgl-token="pk.eyJ1IjoibXJtYWtzaW1pemUiLCJhIjoiRlRwLWwyVSJ9.--Y4RdEJ_5ZuJjSUkx34vQ"
+                position="top-right">
+            </px-map-gl-control-geocoder>
+
+
 
 
             <px-map-gl-source-geojson
@@ -234,6 +240,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       _triggerGeolocate() {
           console.log('tri');
+          const gc = Polymer.dom(this.root).querySelector('px-map-gl-control-geolocate').elementInst;
+          gc._onClickGeolocate();
       },
       _syncFeature(id) {
         if (!this.active) return;
