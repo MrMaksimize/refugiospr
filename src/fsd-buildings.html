@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-source-geojson.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-layer-symbol.html" />
+<link rel="import" href="../bower_components/px-map-gl/px-map-gl-layer-fill.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-popup-debug.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-nav.html" />
 <link rel="import" href="../bower_components/px-map-gl/px-map-gl-control-geolocate.html" />
@@ -116,9 +117,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               id="fac-buildings"
               data="{{ processedBuildings }}">
             </px-map-gl-source-geojson>
+            <px-map-gl-source-geojson
+              id="fac-flood-areas"
+              data="{{ processedFloodAreas }}">
+            </px-map-gl-source-geojson>
+
 
 
             <!-- filter='["in", "asset_type", "Library"]' -->
+
+            <px-map-gl-layer-fill
+              paint='{
+                "fill-opacity": 0.8,
+                "fill-color": "#c6dcff"
+              }'
+              id="flood-zone-layer"
+              source="fac-flood-areas">
+            </px-map-gl-layer-fill>
+
             <px-map-gl-layer-symbol
               layout='{
                 "icon-optional" : false,
@@ -179,7 +195,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         processedBuildings: {
           type: Object,
           notify: true
-        }
+        },
+        processedFloodAreas: {
+          type: Object,
+          notify: true
+        },
       },
       observers: [
       ],

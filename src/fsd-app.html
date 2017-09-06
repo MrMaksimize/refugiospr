@@ -139,7 +139,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             fallback-selection="view404"
             role="main">
           <fsd-buildings name="fsd-buildings"
-                         processed-buildings="[[ processedBuildings ]]">
+                         processed-buildings="[[ processedBuildings ]]"
+                         processed-flood-areas="[[ processedFloodAreas ]]">
           </fsd-buildings>
           <fsd-hospitals name="fsd-hospitals"
                          processed-hospitals="[[ processedHospitals ]]">
@@ -180,6 +181,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </iron-ajax>
 
 
+    <iron-ajax
+        id="ajax"
+        url="https://cityofsandiego-admin.carto.com/api/v2/sql?format=GeoJSON&q=select%20*%20from%20flood_areas_fema"
+        last-response="{{ processedFloodAreas }}"
+        handle-as="json"
+        debounce-duration="3000"
+        auto verbose>
+    </iron-ajax>
+
+
+
   </template>
 
   <script>
@@ -201,6 +213,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         processedHospitals: {
 	  type: Object,
+          notify: true,
+          observer: '_processedBuildingsChanged'
+        },
+
+        processedFloodAreas: {
+          type: Object,
           notify: true,
           observer: '_processedBuildingsChanged'
         }
