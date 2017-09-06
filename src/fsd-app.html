@@ -143,15 +143,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             selected="[[page]]"
             attr-for-selected="name"
             fallback-selection="view404"
-            role="main">
+            role="main"
+            selected-attribute="active">
           <fsd-buildings name="fsd-buildings"
                          processed-buildings="[[ processedBuildings ]]"
                          geo="[[ geo ]]"
-                         processed-flood-areas="[[ processedFloodAreas ]]">
+                         processed-flood-areas="[[ processedFloodAreas ]]"
+                         feature="[[ feature ]]">
           </fsd-buildings>
           <fsd-hospitals name="fsd-hospitals"
                          processed-hospitals="[[ processedHospitals ]]"
-                         geo="[[ geo ]]">
+                         geo="[[ geo ]]"
+                         feature="[[ feature ]]">
           </fsd-hospitals>
 
           <!--<fsd-detail name="fsd-detail"
@@ -250,7 +253,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       listeners: {
-        'map-geo-changed' : '_mapGeoChanged'
+        'map-geo-changed' : '_mapGeoChanged',
+        'map-feature-changed' : '_mapFeatureChanged'
       },
 
       observers: [
@@ -297,7 +301,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // Find the feature
         var featureMatch = REGEX_FEATURE.exec(path);
         if (featureMatch !== null) {
-          this.feature = featureMatch[1];
+          this.feature = Math.floor(featureMatch[1]);
         }
       },
 
@@ -308,11 +312,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
+      _mapFeatureChanged: function(e) {
+        if (this.feature !== e.detail) {
+          console.log('@@ FEATURE CHANGED @@');
+          this.feature = e.detail;
+        }
+      },
+
       _selectPage: function(e) {
         e.preventDefault();
         var link = Polymer.dom(e).rootTarget;
         var page = link.getAttribute('page');
-        this.path = this._encodePath(page, this.geo, this.feature);
+        this.feature = null;
+        this.path = this._encodePath(page, this.geo);
       },
 
       _syncPath: function(page, geo, feature) {
