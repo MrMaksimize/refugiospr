@@ -266,7 +266,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _unProcessedFloodAreasChanged: function(newB, oldB) {
           console.log(newB);
-          var geojson = geobuf.decode(new Pbf(newB));
+          const geojson = geobuf.decode(new Pbf(newB));
           this.set('processedFloodAreas', geojson);
       },
       _processedBuildingsChanged: function(newB, oldB) {
